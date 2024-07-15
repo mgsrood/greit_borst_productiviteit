@@ -20,7 +20,7 @@ def get_request(start_date, end_date):
     while page <= page_count:
         # Define the full URL and endpoint
         url = dyflexis_api_url + dyflexis_system_name
-        endpoint = f"api/business/v3/registered-hours?startDate={start_date}&endDate={end_date}&page={page}"
+        endpoint = f"api/business/v3/registered_hours?startDate={start_date}&endDate={end_date}&page={page}"
         full_url = url + endpoint
 
         headers = {
