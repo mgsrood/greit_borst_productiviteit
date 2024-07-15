@@ -20,7 +20,7 @@ def get_request(start_date, end_date):
     while page <= page_count:
         # Define the full URL and endpoint
         url = dyflexis_api_url + dyflexis_system_name
-        endpoint = f"api/business/v3/scheduled?startDate={start_date}&endDate={end_date}&page={page}"
+        endpoint = f"api/business/v3/registered-hours?startDate={start_date}&endDate={end_date}&page={page}"
         full_url = url + endpoint
 
         headers = {
@@ -36,7 +36,7 @@ def get_request(start_date, end_date):
         if response.status_code == 200:
             # Turn response into JSON data
             data = response.json()
-            shifts = data['shifts']
+            shifts = data['registeredHours']
             
             # Append shifts to all_data
             all_data.extend(shifts)
@@ -59,8 +59,8 @@ def get_request(start_date, end_date):
 
 if __name__ == "__main__":
     # Define parameters
-    start_date = "2024-02-01"
-    end_date = "2024-02-28"
+    start_date = "2019-01-01"
+    end_date = "2024-01-01"
 
     # Create DataFrame
     df = get_request(start_date, end_date)

@@ -1,0 +1,60 @@
+import requests
+import json
+from dotenv import load_dotenv
+import os
+import pandas as pd
+
+load_dotenv()
+
+# Load variables from .env file
+dyflexis_api_token = os.getenv("DYFLEXIS_API_TOKEN")
+dyflexis_api_url = os.getenv("DYFLEXIS_API_URL")
+dyflexis_system_name = os.getenv("DYFLEXIS_SYSTEM_NAME")
+
+# Create a GET request function
+def get_request(start_date, end_date):
+    all_data = []
+
+    # Define the full URL and endpoint
+    url = dyflexis_api_url + dyflexis_system_name
+    endpoint = f"api/business/v3/registered-hours?startDate={start_date}&endDate={end_date}&page=1"
+    full_url = url + endpoint
+
+    headers = {
+        "Authorization": "Token " + dyflexis_api_token,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+
+    # Get request with full_url and endpoint
+    response = requests.get(full_url, headers=headers)
+
+    # Check if request was successful
+    if response.status_code == 200:
+        # Turn response into JSON data
+        data = response.json()
+        shifts = data['registeredHours']
+        
+        # Append shifts to all_data
+        all_data.extend(shifts)
+
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+
+    # Create DataFrame from all_data
+    df = pd.DataFrame(all_data)
+
+    return df
+
+if __name__ == "__main__":
+    # Define parameters
+    start_date = "2019-01-01"
+    end_date = "2024-01-01"
+
+    # Create DataFrame
+    df = get_request(start_date, end_date)
+    print(df)
+
+    # Turn DataFrame into an Excel file and save locally
+    df.to_excel("dyflexis_registered_hours.xlsx", index=False)
+    
